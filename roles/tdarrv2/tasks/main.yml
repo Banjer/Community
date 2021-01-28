@@ -41,7 +41,7 @@
   file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
     - /opt/tdarrv2/config
-    - {{ transcodes_path }}/tdarr
+    - "{{ transcodes_path }}/tdarr"
 
 - name: "Check if '/dev/dri' exists"
   stat:
