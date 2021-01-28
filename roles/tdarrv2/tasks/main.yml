@@ -1,0 +1,70 @@
+#########################################################################
+# Title:            Community: Tdarr V2                                   #
+# Author(s):        Visorak, Migz, Banjer                                       #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  haveagitgat/tdarr:v2-preview                                   #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+- name: "Setting CloudFlare DNS Record"
+  include_role:
+    name: cloudflare-dns
+  vars:
+    record: tdarrv2
+  when: cloudflare_enabled
+
+- name: Create htpasswd
+  htpasswd:
+    path: "/opt/nginx-proxy/htpasswd/{{ item }}.{{ user.domain }}"
+    name: "{{ user.name }}"
+    password: "{{ user.pass }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: 0664
+  with_items:
+    - tdarrv2
+    
+- name: Stop and remove any existing container
+  docker_container:
+    name: tdarrv2
+    state: absent
+
+- name: Create tdarr directories
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
+  with_items:
+    - /opt/tdarrv2/config
+    - /opt/tdarrv2/cache
+ 
+- name: Create and start container
+  docker_container:
+    name: tdarr
+    image: haveagitgat/tdarr:v2-preview
+    pull: yes
+    env:
+      ServerIP: "0.0.0.0"
+      ServerPort: "8266"
+      TZ: "{{ tz }}"
+      PUID: "{{ uid }}"
+      PGID: "{{ gid }}"
+      VIRTUAL_HOST: "tdarrv2.{{ user.domain }}"
+      VIRTUAL_PORT: "8265"
+      LETSENCRYPT_HOST: "tdarrv2.{{ user.domain }}"
+      LETSENCRYPT_EMAIL: "{{ user.email }}"
+    volumes:
+      - "/mnt/unionfs/Media:/media"
+      - "/opt/tdarrv2/config:/app/server"
+      - "/opt/tdarrv2/cache:/transcode_cache"
+      - "/mnt/unionfs/Media/Movies:/movies"
+      - "/mnt/unionfs/Media/TV:/tv"
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - tdarrv2
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started
