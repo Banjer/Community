@@ -95,6 +95,7 @@ environment:
     synclounge
     tdarr
     tdarrv2
+    tdarrv2_node
     telegraf
     thelounge
     transmissionvpn
