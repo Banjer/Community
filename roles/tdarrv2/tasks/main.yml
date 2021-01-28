@@ -9,6 +9,13 @@
 #                   GNU General Public License v3.0                     #
 #########################################################################
 ---
+
+################################
+# Paths
+################################
+
+tdarr_transcodes_location: "{{ transcodes_path }}/tdarr"
+
 - name: "Setting CloudFlare DNS Record"
   include_role:
     name: cloudflare-dns
@@ -41,7 +48,7 @@
   file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
     - /opt/tdarrv2/config
-    - "{{ transcodes_path }}/tdarr"
+    - "{{ tdarr_transcodes_location }}"
 
 - name: "Check if '/dev/dri' exists"
   stat:
@@ -66,7 +73,7 @@
     volumes:
       - "/mnt/unionfs/Media:/media"
       - "/opt/tdarrv2/config:/app/server"
-      - "{{ transcodes_path }}/tdarr:/transcode_cache"
+      - "{{tdarr_transcodes_location }}:/transcode_cache"
       - "/mnt/unionfs/Media/Movies:/movies"
       - "/mnt/unionfs/Media/TV:/tv"
     labels:
@@ -97,7 +104,7 @@
       NVIDIA_VISIBLE_DEVICES: "{{ 'all' if gpu.nvidia | default(false) else omit }}"
     volumes:
       - "/mnt/unionfs/Media:/media"
-      - "{{ transcodes_path }}/tdarr:/transcode_cache"
+      - "{{tdarr_transcodes_location }}:/transcode_cache"
       - "/mnt/unionfs/Media/Movies:/movies"
       - "/mnt/unionfs/Media/TV:/tv"
     devices: "{{ '/dev/dri:/dev/dri' if (gpu.intel and dev_dri.stat.exists) | default(false) else omit }}"      
