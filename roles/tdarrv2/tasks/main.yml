@@ -44,7 +44,7 @@
     image: haveagitgat/tdarr:v2-preview
     pull: yes
     env:
-      serverIP: "0.0.0.0"
+      serverIP: "tdarrv2"
       serverPort: "8266"
       TZ: "{{ tz }}"
       PUID: "{{ uid }}"

@@ -32,9 +32,9 @@
     pull: yes
     env:
       NodeID: "cloudboxnode"
-      nodeIP: "0.0.0.0"
-      nodePort: "9276"
-      serverIP: "0.0.0.0"
+      nodeIP: "tdarrv2_node"
+      nodePort: "8276"
+      serverIP: "tdarrv2"
       serverPort: "8266"
       TZ: "{{ tz }}"
       PUID: "{{ uid }}"
