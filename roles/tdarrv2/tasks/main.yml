@@ -10,11 +10,8 @@
 #########################################################################
 ---
 
-################################
-# Paths
-################################
-
-tdarr_transcodes_location: "{{ transcodes_path }}/tdarr"
+- name: Set Path
+  tdarr_transcodes_location: "{{ transcodes_path }}/tdarr"
 
 - name: "Setting CloudFlare DNS Record"
   include_role:
