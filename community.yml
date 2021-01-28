@@ -96,7 +96,6 @@
     - { role: synclounge, tags: ['synclounge'] }
     - { role: tdarr, tags: ['tdarr'] }
     - { role: tdarrv2, tags: ['tdarrv2'] }
-    - { role: tdarrv2_node, tags: ['tdarrv2_node'] }
     - { role: telegraf, tags: ['telegraf'] }
     - { role: telly, tags: ['telly'] }
     - { role: thelounge, tags: ['thelounge'] }
