@@ -94,6 +94,7 @@ environment:
     subsonic
     synclounge
     tdarr
+    tdarrv2
     telegraf
     thelounge
     transmissionvpn

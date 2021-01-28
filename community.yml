@@ -95,6 +95,7 @@
     - { role: subsonic, tags: ['subsonic'] }
     - { role: synclounge, tags: ['synclounge'] }
     - { role: tdarr, tags: ['tdarr'] }
+    - { role: tdarrv2, tags: ['tdarrv2'] }
     - { role: telegraf, tags: ['telegraf'] }
     - { role: telly, tags: ['telly'] }
     - { role: thelounge, tags: ['thelounge'] }
