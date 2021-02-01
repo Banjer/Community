@@ -15,7 +15,7 @@
     path: "/dev/dri"
   register: dev_dri
 
-- name: Stop and remove any existing node container
+- name: Stop and remove any existing cpu node container
   docker_container:
     name: tdarrv2_cpu_node
     state: absent

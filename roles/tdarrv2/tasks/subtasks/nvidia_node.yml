@@ -10,14 +10,14 @@
 #########################################################################
 ---
 
-- name: Stop and remove any existing node container
+- name: Stop and remove any existing nvidia node container
   docker_container:
     name: tdarrv2_nvidia_node
     state: absent
 
-- name: Create and start CPU node container
+- name: Create and start nvidia node container
   docker_container:
-    name: tdarrv2_cpu_node
+    name: tdarrv2_nvidia_node
     image: haveagitgat/tdarr_node:v2-preview
     pull: yes
     env:
