@@ -23,7 +23,7 @@
 - name: Create and start CPU node container
   docker_container:
     name: tdarrv2_cpu_node
-    image: haveagitgat/tdarr_node:v2-preview
+    image: haveagitgat/tdarr_node
     pull: yes
     env:
       NodeID: "CPU_node"

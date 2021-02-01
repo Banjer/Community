@@ -42,7 +42,7 @@
 - name: Create and start server container
   docker_container:
     name: tdarrv2
-    image: haveagitgat/tdarr:v2-preview
+    image: haveagitgat/tdarr
     pull: yes
     env:
       serverIP: "tdarrv2"

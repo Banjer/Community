@@ -18,7 +18,7 @@
 - name: Create and start nvidia node container
   docker_container:
     name: tdarrv2_nvidia_node
-    image: haveagitgat/tdarr_node:v2-preview
+    image: haveagitgat/tdarr_node
     pull: yes
     env:
       NodeID: "NVENC_node"
@@ -36,7 +36,6 @@
       - "/mnt/local/transcodes/tdarrv2:/transcode_cache"
       - "/mnt/unionfs/Media/Movies:/movies"
       - "/mnt/unionfs/Media/TV:/tv"
-   
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
