@@ -33,21 +33,11 @@
     name: tdarrv2
     state: absent
 
-- name: Stop and remove any existing node container
-  docker_container:
-    name: tdarrv2_node
-    state: absent
-
 - name: Create tdarr directories
   file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
     - /opt/tdarrv2/config
     - /mnt/local/transcodes/tdarrv2
-
-- name: "Check if '/dev/dri' exists"
-  stat:
-    path: "/dev/dri"
-  register: dev_dri
 
 - name: Create and start server container
   docker_container:
@@ -80,34 +70,9 @@
     restart_policy: unless-stopped
     state: started
 
-- name: Create and start node container
-  docker_container:
-    name: tdarrv2_node
-    image: haveagitgat/tdarr_node:v2-preview
-    pull: yes
-    env:
-      NodeID: "cloudboxnode"
-      nodeIP: "tdarrv2_node"
-      nodePort: "8276"
-      serverIP: "tdarrv2"
-      serverPort: "8266"
-      TZ: "{{ tz }}"
-      PUID: "{{ uid }}"
-      PGID: "{{ gid }}"
-      NVIDIA_DRIVER_CAPABILITIES: "{{ 'all' if gpu.nvidia | default(false) else omit }}"
-      NVIDIA_VISIBLE_DEVICES: "{{ 'all' if gpu.nvidia | default(false) else omit }}"
-    volumes:
-      - "/mnt/unionfs/Media:/media"
-      - "/mnt/local/transcodes/tdarrv2:/transcode_cache"
-      - "/mnt/unionfs/Media/Movies:/movies"
-      - "/mnt/unionfs/Media/TV:/tv"
-    devices: "{{ '/dev/dri:/dev/dri' if (gpu.intel and dev_dri.stat.exists) | default(false) else omit }}"      
-    labels:
-      "com.github.cloudbox.cloudbox_managed": "true"
-    networks:
-      - name: cloudbox
-        aliases:
-          - tdarrv2_node
-    purge_networks: yes
-    restart_policy: unless-stopped
-    state: started
+- name: CPU node Tasks
+  import_tasks: "subtasks/cpu_node.yml"
+
+- name: Nvidia node Tasks
+  import_tasks: "subtasks/nvidia_node.yml"
+  when: (gpu.nvidia.enabled)

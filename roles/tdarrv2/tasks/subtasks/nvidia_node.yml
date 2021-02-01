@@ -1,0 +1,48 @@
+#########################################################################
+# Title:            Community: Tdarr V2 nvidia node                     #
+# Author(s):        Visorak, Migz, Banjer                               #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  haveagitgat/tdarr:v2-preview                        #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+
+- name: Stop and remove any existing node container
+  docker_container:
+    name: tdarrv2_nvidia_node
+    state: absent
+
+- name: Create and start CPU node container
+  docker_container:
+    name: tdarrv2_cpu_node
+    image: haveagitgat/tdarr_node:v2-preview
+    pull: yes
+    env:
+      NodeID: "NVENC_node"
+      nodeIP: "tdarrv2_nvidia_node"
+      nodePort: "8276"
+      serverIP: "tdarrv2"
+      serverPort: "8266"
+      TZ: "{{ tz }}"
+      PUID: "{{ uid }}"
+      PGID: "{{ gid }}"
+      NVIDIA_DRIVER_CAPABILITIES: "compute,video,utility"
+      NVIDIA_VISIBLE_DEVICES: "all"
+    volumes:
+      - "/mnt/unionfs/Media:/media"
+      - "/mnt/local/transcodes/tdarrv2:/transcode_cache"
+      - "/mnt/unionfs/Media/Movies:/movies"
+      - "/mnt/unionfs/Media/TV:/tv"
+   
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - tdarrv2_nvidia_node
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started
